@@ -1,26 +1,107 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePromotionDto } from './dto/create-promotion.dto';
-import { UpdatePromotionDto } from './dto/update-promotion.dto';
+import { Body, Injectable } from '@nestjs/common';
+import { CreatePromotionDTO } from './dto/create-promotion.dto';
+import { Promotion } from './entities/promotion.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from 'src/product/entities/product.entity';
+import { PromotionActivationRule } from './entities/promotion-activation-rule.entity';
+import { PromotionDiscountRule } from './entities/promotion-discount-rule.entity';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class PromotionService {
-  create(createPromotionDto: CreatePromotionDto) {
-    return 'This action adds a new promotion';
+  constructor(
+    @InjectRepository(Promotion)
+    private readonly promotionRepository: Repository<Promotion>,
+    @InjectRepository(PromotionActivationRule)
+    private readonly promotionActivationRepository: Repository<PromotionActivationRule>,
+    @InjectRepository(PromotionDiscountRule)
+    private readonly promotionDiscountRepository: Repository<PromotionDiscountRule>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
+
+  async create(
+    @Body() createPromotionDto: CreatePromotionDTO,
+  ): Promise<Promotion> {
+    const { productActivation, productDiscount } = createPromotionDto;
+
+    const promotion = new Promotion();
+    promotion.productActivation = [];
+    promotion.productDiscount = [];
+
+    // TODO: move it to utility function
+    for (const activationRule of productActivation) {
+      if (activationRule.quantity <= 0) {
+        throw new Error( // Error: InvalidActivationRule
+          `Product quantity for SKU ${activationRule.productSku} must be greater than zero.`,
+        );
+      }
+      const product = await this.productRepository.findOne({
+        where: { sku: activationRule.productSku },
+      });
+
+      if (!product) {
+        throw new Error( // Error: InvalidActivationRule
+          `Product with SKU ${activationRule.productSku} not found`,
+        );
+      }
+
+      const rule = new PromotionActivationRule();
+      rule.quantity = activationRule.quantity;
+      rule.product = product;
+      rule.promotion = promotion;
+      const plainRule = instanceToPlain(rule);
+
+      promotion.productActivation.push(plainRule as PromotionActivationRule);
+    }
+
+    // TODO: move it to utility function
+    for (const discountRule of productDiscount) {
+      if (discountRule.quantity < 0) {
+        throw new Error( // Error: InvalidDiscountRule
+          `Product quantity for SKU ${discountRule.productSku} must be positive.`,
+        );
+      }
+      const product = await this.productRepository.findOne({
+        where: { sku: discountRule.productSku },
+      });
+
+      if (!product) {
+        throw new Error( // Error: InvalidDiscountRule
+          `Product with SKU ${discountRule.productSku} not found`,
+        );
+      }
+
+      const rule = new PromotionDiscountRule();
+      rule.quantity = discountRule.quantity;
+      rule.discount = discountRule.discount;
+      rule.product = product;
+      rule.promotion = promotion;
+      const plainRule = instanceToPlain(rule);
+
+      promotion.productDiscount.push(plainRule as PromotionDiscountRule);
+    }
+    return this.promotionRepository.save(promotion);
   }
 
-  findAll() {
-    return `This action returns all promotion`;
+  async findAll(): Promise<Promotion[]> {
+    return this.promotionRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} promotion`;
+  async findOne(id: number): Promise<Promotion | null> {
+    return this.promotionRepository.findOneBy({ id });
   }
 
-  update(id: number, updatePromotionDto: UpdatePromotionDto) {
-    return `This action updates a #${id} promotion`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} promotion`;
+  // TODO: use transactional request
+  async remove(id: number): Promise<void> {
+    const promotion = await this.findOne(id);
+    for (const productActivation of promotion.productActivation) {
+      await this.promotionActivationRepository.delete(productActivation.id);
+    }
+    for (const productDiscount of promotion.productDiscount) {
+      await this.promotionDiscountRepository.delete(productDiscount.id);
+    }
+    this.promotionRepository.delete(id);
   }
 }

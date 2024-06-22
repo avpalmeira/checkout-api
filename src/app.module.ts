@@ -1,9 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_PIPE } from '@nestjs/core';
 import { ProductModule } from './product/product.module';
 import { PromotionModule } from './promotion/promotion.module';
-import { PromotionActivationRuleModule } from './promotion-activation-rule/promotion-activation-rule.module';
-import { PromotionDiscountRuleModule } from './promotion-discount-rule/promotion-discount-rule.module';
 
 @Module({
   imports: [
@@ -20,10 +19,13 @@ import { PromotionDiscountRuleModule } from './promotion-discount-rule/promotion
     }),
     ProductModule,
     PromotionModule,
-    PromotionActivationRuleModule,
-    PromotionDiscountRuleModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
 export class AppModule {}

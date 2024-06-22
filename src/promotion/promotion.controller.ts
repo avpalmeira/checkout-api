@@ -1,14 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
-import { CreatePromotionDto } from './dto/create-promotion.dto';
-import { UpdatePromotionDto } from './dto/update-promotion.dto';
+import { CreatePromotionDTO } from './dto/create-promotion.dto';
 
 @Controller('promotion')
 export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
 
   @Post()
-  create(@Body() createPromotionDto: CreatePromotionDto) {
+  create(@Body() createPromotionDto: CreatePromotionDTO) {
+    // TODO: capture error from service
     return this.promotionService.create(createPromotionDto);
   }
 
@@ -18,17 +18,12 @@ export class PromotionController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.promotionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePromotionDto: UpdatePromotionDto) {
-    return this.promotionService.update(+id, updatePromotionDto);
+  findOne(@Param('id') id: number) {
+    return this.promotionService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.promotionService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.promotionService.remove(id);
   }
 }

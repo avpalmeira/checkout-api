@@ -1,9 +1,9 @@
-###
+### PRODUCT REQUESTS
 GET http://localhost:3000/product
 
 ###
 POST http://localhost:3000/product
-content-type: application/json
+Content-Type: application/json
 
 {
   "name": "Macbook",
@@ -16,3 +16,33 @@ GET http://localhost:3000/product/435CDS
 
 ###
 DELETE http://localhost:3000/product/435CDS
+
+
+### PROMOTION REQUESTS
+GET http://localhost:3000/promotion
+
+###
+POST http://localhost:3000/promotion
+Content-Type: application/json
+
+{
+  "productActivation": [
+    {
+      "quantity": 1,
+      "productSku": "435CDS"
+    }
+  ],
+  "productDiscount": [
+    {
+      "quantity": 1,
+      "productSku": "435CDS",
+      "discount": 0.1
+    }
+  ]
+}
+
+###
+GET http://localhost:3000/promotion/8
+
+###
+DELETE http://localhost:3000/promotion/7

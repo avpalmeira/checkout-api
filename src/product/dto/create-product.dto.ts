@@ -5,7 +5,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-export class CreateProductDto {
+export class CreateProductDTO {
   @IsString()
   @IsNotEmpty()
   sku: string;

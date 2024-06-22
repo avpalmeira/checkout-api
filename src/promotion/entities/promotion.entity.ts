@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { PromotionActivationRule } from '../../promotion-activation-rule/entities/promotion-activation-rule.entity';
-import { PromotionDiscountRule } from '../../promotion-discount-rule/entities/promotion-discount-rule.entity';
+import { PromotionActivationRule } from './promotion-activation-rule.entity';
+import { PromotionDiscountRule } from './promotion-discount-rule.entity';
 
 @Entity('promotions')
 export class Promotion {
@@ -9,11 +9,13 @@ export class Promotion {
 
   @OneToMany(() => PromotionActivationRule, (rule) => rule.promotion, {
     cascade: true,
+    eager: true,
   })
   productActivation: PromotionActivationRule[];
 
   @OneToMany(() => PromotionDiscountRule, (rule) => rule.promotion, {
     cascade: true,
+    eager: true,
   })
   productDiscount: PromotionDiscountRule[];
 }

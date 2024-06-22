@@ -1,18 +1,23 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Promotion } from '../../promotion/entities/promotion.entity';
 import { Product } from '../../product/entities/product.entity';
+import { Exclude } from 'class-transformer';
 
-@Entity('promotion_activation_rules')
-export class PromotionActivationRule {
+@Entity('promotion_discount_rules')
+export class PromotionDiscountRule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { eager: true })
   product: Product;
 
   @Column()
   quantity: number;
 
-  @ManyToOne(() => Promotion, (promotion) => promotion.productActivation)
+  @Column('decimal')
+  discount: number;
+
+  @ManyToOne(() => Promotion, (promotion) => promotion.productDiscount)
+  @Exclude({ toPlainOnly: true })
   promotion: Promotion;
 }
