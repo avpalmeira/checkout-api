@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_PIPE } from '@nestjs/core';
 import { ProductModule } from './product/product.module';
 import { PromotionModule } from './promotion/promotion.module';
+import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PromotionModule } from './promotion/promotion.module';
     }),
     ProductModule,
     PromotionModule,
+    CheckoutModule,
   ],
   controllers: [],
   providers: [

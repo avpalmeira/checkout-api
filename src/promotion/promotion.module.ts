@@ -18,5 +18,6 @@ import { PromotionDiscountRule } from './entities/promotion-discount-rule.entity
   ],
   controllers: [PromotionController],
   providers: [PromotionService],
+  exports: [TypeOrmModule],
 })
 export class PromotionModule {}

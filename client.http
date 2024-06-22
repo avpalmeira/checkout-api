@@ -6,9 +6,9 @@ POST http://localhost:3000/product
 Content-Type: application/json
 
 {
-  "name": "Macbook",
-  "sku": "435CDS",
-  "price": 3200
+  "name": "Google Phone",
+  "sku": "676HTU",
+  "price": 1200
 }
 
 ###
@@ -46,3 +46,15 @@ GET http://localhost:3000/promotion/8
 
 ###
 DELETE http://localhost:3000/promotion/7
+
+
+### CHECKOUT REQUESTS
+POST http://localhost:3000/checkout
+Content-Type: application/json
+
+{
+  "products": [
+    "435CDS",
+    "231KLI"
+  ]
+}

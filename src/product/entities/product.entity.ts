@@ -8,6 +8,15 @@ export class Product {
   @Column()
   name: string;
 
-  @Column('decimal')
+  @Column('decimal', {
+    transformer: {
+      to(value) {
+        return value;
+      },
+      from(value) {
+        return parseFloat(value);
+      },
+    },
+  })
   price: number;
 }
