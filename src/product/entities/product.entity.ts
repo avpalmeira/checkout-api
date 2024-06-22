@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity()
+@Entity('products')
 export class Product {
   @PrimaryColumn()
   sku: string;

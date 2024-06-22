@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PromotionActivationRule } from '../../promotion-activation-rule/entities/promotion-activation-rule.entity';
 import { PromotionDiscountRule } from '../../promotion-discount-rule/entities/promotion-discount-rule.entity';
 
-@Entity()
+@Entity('promotions')
 export class Promotion {
   @PrimaryGeneratedColumn()
   id: number;
