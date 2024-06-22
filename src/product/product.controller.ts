@@ -17,12 +17,12 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  findOne(@Param('id') sku: string) {
+    return this.productService.findOne(sku);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  remove(@Param('id') sku: string) {
+    return this.productService.remove(sku);
   }
 }

@@ -1,0 +1,18 @@
+###
+GET http://localhost:3000/product
+
+###
+POST http://localhost:3000/product
+content-type: application/json
+
+{
+  "name": "Macbook",
+  "sku": "435CDS",
+  "price": 3200
+}
+
+###
+GET http://localhost:3000/product/435CDS
+
+###
+DELETE http://localhost:3000/product/435CDS
