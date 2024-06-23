@@ -14,7 +14,16 @@ export class PromotionDiscountRule {
   @Column()
   quantity: number;
 
-  @Column('decimal')
+  @Column('decimal', {
+    transformer: {
+      to(value) {
+        return value;
+      },
+      from(value) {
+        return parseFloat(value);
+      },
+    },
+  })
   discount: number;
 
   @ManyToOne(() => Promotion, (promotion) => promotion.productDiscount)

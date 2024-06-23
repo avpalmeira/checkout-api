@@ -6,9 +6,9 @@ POST http://localhost:3000/product
 Content-Type: application/json
 
 {
-  "name": "Google Phone",
-  "sku": "676HTU",
-  "price": 1200
+  "name": "Alexa Speaker",
+  "sku": "A304SD",
+  "price": 102
 }
 
 ###
@@ -28,14 +28,14 @@ Content-Type: application/json
 {
   "productActivation": [
     {
-      "quantity": 1,
-      "productSku": "435CDS"
+      "quantity": 3,
+      "productSku": "A304SD"
     }
   ],
   "productDiscount": [
     {
-      "quantity": 1,
-      "productSku": "435CDS",
+      "quantity": 0,
+      "productSku": "A304SD",
       "discount": 0.1
     }
   ]
@@ -45,7 +45,7 @@ Content-Type: application/json
 GET http://localhost:3000/promotion/8
 
 ###
-DELETE http://localhost:3000/promotion/7
+DELETE http://localhost:3000/promotion/8
 
 
 ### CHECKOUT REQUESTS
@@ -54,7 +54,10 @@ Content-Type: application/json
 
 {
   "products": [
-    "435CDS",
-    "231KLI"
+    "344222",
+    "A304SD",
+    "A304SD",
+    "A304SD",
+    "435CDS"
   ]
 }
