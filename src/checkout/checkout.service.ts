@@ -3,6 +3,7 @@ import { CalculateCheckoutItemsDTO } from './dto/calculate-checkout-items.dto';
 import { PromotionService } from 'src/promotion/promotion.service';
 import { ProductService } from 'src/product/product.service';
 import { Product } from 'src/product/entities/product.entity';
+import { getGroupedItemsDiscountSKUs } from 'src/utils';
 
 @Injectable()
 export class CheckoutService {
@@ -31,14 +32,7 @@ export class CheckoutService {
 
       checkoutItems.push(product);
     }
-    // TODO: move to utility function
-    const alphaArray = Array.from({ length: 26 }, (_, i) =>
-      String.fromCharCode('A'.charCodeAt(0) + i),
-    );
-    // Grouped items discount use SKUs that are not allowed for regular products
-    const groupedItemsDiscountNewSKUs = alphaArray.map((char) =>
-      char.repeat(6),
-    );
+    const groupedItemsDiscountNewSKUs = getGroupedItemsDiscountSKUs();
 
     // Check for each promotion if discounts can be applied
     const allPromotions = await this.promotionService.findAll();
@@ -124,6 +118,12 @@ export class CheckoutService {
               const newProductWithDiscount = new Product();
               const groupedItemsDiscountNewSKU =
                 groupedItemsDiscountNewSKUs.shift();
+
+              if (!groupedItemsDiscountNewSKU) {
+                throw new Error(
+                  'The system is limited by 26 discounts allowed',
+                );
+              }
               newProductWithDiscount.name = `Discount_applied_${groupedItemsDiscountNewSKU}`;
               newProductWithDiscount.sku = groupedItemsDiscountNewSKU;
               newProductWithDiscount.price =
@@ -177,6 +177,9 @@ export class CheckoutService {
           const newProductWithDiscount = new Product();
           const groupedItemsDiscountNewSKU =
             groupedItemsDiscountNewSKUs.shift();
+          if (!groupedItemsDiscountNewSKU) {
+            throw new Error('The system is limited by 26 discounts allowed');
+          }
           newProductWithDiscount.name = `Discount_applied_${groupedItemsDiscountNewSKU}`;
           newProductWithDiscount.sku = groupedItemsDiscountNewSKU;
           newProductWithDiscount.price =

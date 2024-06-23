@@ -2,7 +2,7 @@ import { Body, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePromotionDTO } from './dto/create-promotion.dto';
 import { Promotion } from './entities/promotion.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from 'src/product/entities/product.entity';
 import { PromotionActivationRule } from './entities/promotion-activation-rule.entity';
 import { PromotionDiscountRule } from './entities/promotion-discount-rule.entity';
@@ -21,7 +21,6 @@ export class PromotionService {
     private readonly promotionDiscountRepository: Repository<PromotionDiscountRule>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -33,7 +32,6 @@ export class PromotionService {
     promotion.productActivation = [];
     promotion.productDiscount = [];
 
-    // TODO: move it to utility function
     for (const activationRule of productActivation) {
       if (activationRule.quantity <= 0) {
         throw new Error(
@@ -54,16 +52,27 @@ export class PromotionService {
       rule.quantity = activationRule.quantity;
       rule.product = product;
       rule.promotion = promotion;
-      const plainRule = instanceToPlain(rule);
+      const plainRule = instanceToPlain(rule); // Added to avoid circular dep
 
       promotion.productActivation.push(plainRule as PromotionActivationRule);
     }
 
-    // TODO: move it to utility function
     for (const discountRule of productDiscount) {
-      if (discountRule.quantity < 0) {
+      const equivalentActivationRule = productActivation.find(
+        (rule) => rule.productSku === discountRule.productSku,
+      );
+      if (!equivalentActivationRule) {
         throw new Error(
-          `Product quantity for SKU ${discountRule.productSku} must be positive.`,
+          `Product ${discountRule.productSku} must be added to product activation`,
+        );
+      }
+      if (
+        discountRule.quantity < 0 ||
+        discountRule.quantity > equivalentActivationRule.quantity
+      ) {
+        throw new Error(
+          `Product quantity for SKU ${discountRule.productSku} must be positive and ` +
+            'equal or less the quantity required for its equivalent activation rule',
         );
       }
       const product = await this.productRepository.findOne({
@@ -81,18 +90,18 @@ export class PromotionService {
       rule.discount = discountRule.discount;
       rule.product = product;
       rule.promotion = promotion;
-      const plainRule = instanceToPlain(rule);
+      const plainRule = instanceToPlain(rule); // Added to avoid circular dep
 
       promotion.productDiscount.push(plainRule as PromotionDiscountRule);
     }
     return this.promotionRepository.save(promotion);
   }
 
-  async findAll(): Promise<Promotion[]> {
+  findAll(): Promise<Promotion[]> {
     return this.promotionRepository.find();
   }
 
-  async findOne(id: number): Promise<Promotion | null> {
+  findOne(id: number): Promise<Promotion | null> {
     return this.promotionRepository.findOneBy({ id });
   }
 
@@ -109,6 +118,6 @@ export class PromotionService {
     for (const productDiscount of promotion.productDiscount) {
       await this.promotionDiscountRepository.delete(productDiscount.id);
     }
-    await this.promotionRepository.delete(id);
+    this.promotionRepository.delete(id);
   }
 }

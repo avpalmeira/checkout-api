@@ -11,19 +11,19 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async create(createProductDto: CreateProductDTO): Promise<Product> {
+  create(createProductDto: CreateProductDTO): Promise<Product> {
     return this.productRepository.save(createProductDto);
   }
 
-  async findAll(): Promise<Product[]> {
+  findAll(): Promise<Product[]> {
     return this.productRepository.find();
   }
 
-  async findOne(sku: string): Promise<Product | null> {
+  findOne(sku: string): Promise<Product | null> {
     return this.productRepository.findOneBy({ sku });
   }
 
   async remove(sku: string): Promise<void> {
-    await this.productRepository.delete(sku);
+    this.productRepository.delete(sku);
   }
 }

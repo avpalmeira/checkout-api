@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/product/ABD878
+GET http://localhost:3000/product/A304SD
 
 ###
 DELETE http://localhost:3000/product/ABD878
@@ -42,7 +42,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/promotion/8
+GET http://localhost:3000/promotion/9
 
 ###
 DELETE http://localhost:3000/promotion/8
