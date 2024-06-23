@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { getGroupedItemsDiscountSKUs } from 'src/utils';
+import { getGroupedItemsDiscountSKUs } from '../../utils';
 export class CreateProductDTO {
   @IsString()
   @IsNotEmpty()

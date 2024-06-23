@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CalculateCheckoutItemsDTO } from './dto/calculate-checkout-items.dto';
-import { PromotionService } from 'src/promotion/promotion.service';
-import { ProductService } from 'src/product/product.service';
-import { Product } from 'src/product/entities/product.entity';
-import { getGroupedItemsDiscountSKUs } from 'src/utils';
+import { PromotionService } from '../promotion/promotion.service';
+import { ProductService } from '../product/product.service';
+import { Product } from '../product/entities/product.entity';
+import { getGroupedItemsDiscountSKUs } from '../utils';
 
 @Injectable()
 export class CheckoutService {

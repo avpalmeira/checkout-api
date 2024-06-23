@@ -3,7 +3,7 @@ import { CreatePromotionDTO } from './dto/create-promotion.dto';
 import { Promotion } from './entities/promotion.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from 'src/product/entities/product.entity';
+import { Product } from '../product/entities/product.entity';
 import { PromotionActivationRule } from './entities/promotion-activation-rule.entity';
 import { PromotionDiscountRule } from './entities/promotion-discount-rule.entity';
 
