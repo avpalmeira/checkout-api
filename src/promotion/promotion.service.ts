@@ -1,12 +1,14 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePromotionDTO } from './dto/create-promotion.dto';
 import { Promotion } from './entities/promotion.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Product } from 'src/product/entities/product.entity';
 import { PromotionActivationRule } from './entities/promotion-activation-rule.entity';
 import { PromotionDiscountRule } from './entities/promotion-discount-rule.entity';
+
 import { instanceToPlain } from 'class-transformer';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class PromotionService {
@@ -19,6 +21,7 @@ export class PromotionService {
     private readonly promotionDiscountRepository: Repository<PromotionDiscountRule>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -33,7 +36,7 @@ export class PromotionService {
     // TODO: move it to utility function
     for (const activationRule of productActivation) {
       if (activationRule.quantity <= 0) {
-        throw new Error( // Error: InvalidActivationRule
+        throw new Error(
           `Product quantity for SKU ${activationRule.productSku} must be greater than zero.`,
         );
       }
@@ -42,7 +45,7 @@ export class PromotionService {
       });
 
       if (!product) {
-        throw new Error( // Error: InvalidActivationRule
+        throw new Error(
           `Product with SKU ${activationRule.productSku} not found`,
         );
       }
@@ -59,7 +62,7 @@ export class PromotionService {
     // TODO: move it to utility function
     for (const discountRule of productDiscount) {
       if (discountRule.quantity < 0) {
-        throw new Error( // Error: InvalidDiscountRule
+        throw new Error(
           `Product quantity for SKU ${discountRule.productSku} must be positive.`,
         );
       }
@@ -68,7 +71,7 @@ export class PromotionService {
       });
 
       if (!product) {
-        throw new Error( // Error: InvalidDiscountRule
+        throw new Error(
           `Product with SKU ${discountRule.productSku} not found`,
         );
       }
@@ -93,15 +96,19 @@ export class PromotionService {
     return this.promotionRepository.findOneBy({ id });
   }
 
-  // TODO: use transactional request
+  @Transactional()
   async remove(id: number): Promise<void> {
     const promotion = await this.findOne(id);
+
+    if (!promotion) {
+      throw new NotFoundException(`Promotion with id ${id} was not found`);
+    }
     for (const productActivation of promotion.productActivation) {
       await this.promotionActivationRepository.delete(productActivation.id);
     }
     for (const productDiscount of promotion.productDiscount) {
       await this.promotionDiscountRepository.delete(productDiscount.id);
     }
-    this.promotionRepository.delete(id);
+    await this.promotionRepository.delete(id);
   }
 }

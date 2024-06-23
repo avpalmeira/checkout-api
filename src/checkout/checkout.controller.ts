@@ -1,4 +1,10 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  BadRequestException,
+} from '@nestjs/common';
 import { CheckoutService } from './checkout.service';
 import { CalculateCheckoutItemsDTO } from './dto/calculate-checkout-items.dto';
 
@@ -6,9 +12,16 @@ import { CalculateCheckoutItemsDTO } from './dto/calculate-checkout-items.dto';
 export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
-  // TODO: Return HTTP code 200
+  @HttpCode(200)
   @Post()
   calculate(@Body() calculateCheckoutItemsDto: CalculateCheckoutItemsDTO) {
-    return this.checkoutService.calculate(calculateCheckoutItemsDto);
+    try {
+      return this.checkoutService.calculate(calculateCheckoutItemsDto);
+    } catch (e: any) {
+      throw new BadRequestException(
+        'An error was thrown during calcaultion',
+        e,
+      );
+    }
   }
 }

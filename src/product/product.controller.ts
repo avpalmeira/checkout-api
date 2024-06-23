@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  NotFoundException,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 
@@ -7,22 +15,26 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDTO) {
-    return this.productService.create(createProductDto);
+  async create(@Body() createProductDto: CreateProductDTO) {
+    return await this.productService.create(createProductDto);
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  async findAll() {
+    return await this.productService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') sku: string) {
-    return this.productService.findOne(sku);
+  async findOne(@Param('id') sku: string) {
+    const product = await this.productService.findOne(sku);
+    if (!product) {
+      throw new NotFoundException(`Product with SKU (id) ${sku} was not found`);
+    }
+    return product;
   }
 
   @Delete(':id')
-  remove(@Param('id') sku: string) {
-    return this.productService.remove(sku);
+  async remove(@Param('id') sku: string) {
+    return await this.productService.remove(sku);
   }
 }

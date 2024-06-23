@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PromotionService } from './promotion.service';
 import { CreatePromotionDTO } from './dto/create-promotion.dto';
 
@@ -7,23 +16,30 @@ export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
 
   @Post()
-  create(@Body() createPromotionDto: CreatePromotionDTO) {
-    // TODO: capture error from service
-    return this.promotionService.create(createPromotionDto);
+  async create(@Body() createPromotionDto: CreatePromotionDTO) {
+    try {
+      return await this.promotionService.create(createPromotionDto);
+    } catch (e: any) {
+      throw new BadRequestException('Trying to create an invalid promotion', e);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.promotionService.findAll();
+  async findAll() {
+    return await this.promotionService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.promotionService.findOne(id);
+  async findOne(@Param('id') id: number) {
+    const promotion = await this.promotionService.findOne(id);
+    if (!promotion) {
+      throw new NotFoundException(`Promotion with id ${id} was not found`);
+    }
+    return promotion;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.promotionService.remove(id);
+  async remove(@Param('id') id: number) {
+    return await this.promotionService.remove(id);
   }
 }

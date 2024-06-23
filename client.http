@@ -12,10 +12,10 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/product/435CDS
+GET http://localhost:3000/product/ABD878
 
 ###
-DELETE http://localhost:3000/product/435CDS
+DELETE http://localhost:3000/product/ABD878
 
 
 ### PROMOTION REQUESTS
