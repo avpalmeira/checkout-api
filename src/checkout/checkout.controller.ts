@@ -19,7 +19,7 @@ export class CheckoutController {
       return this.checkoutService.calculate(calculateCheckoutItemsDto);
     } catch (e: any) {
       throw new BadRequestException(
-        'An error was thrown during calcaultion',
+        'An error was thrown during calculation',
         e,
       );
     }

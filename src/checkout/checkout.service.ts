@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CalculateCheckoutItemsDTO } from './dto/calculate-checkout-items.dto';
 import { PromotionService } from 'src/promotion/promotion.service';
 import { ProductService } from 'src/product/product.service';
@@ -13,6 +13,8 @@ export class CheckoutService {
     @Inject()
     private readonly productService: ProductService,
   ) {}
+
+  private readonly logger = new Logger(CheckoutService.name);
 
   async calculate(
     calculateCheckoutItemsDto: CalculateCheckoutItemsDTO,
@@ -69,7 +71,7 @@ export class CheckoutService {
             (rule) => rule.product.sku === sku && rule.quantity === 0,
           );
 
-          console.log(
+          this.logger.debug(
             `does discount apply to all products? ${applyDiscountToAllProducts}`,
           );
 
@@ -84,7 +86,9 @@ export class CheckoutService {
             (rule) => rule.quantity === 0,
           );
 
-          console.log(`discount is activated? ${discountActivated} for ${sku}`);
+          this.logger.debug(
+            `discount is activated? ${discountActivated} for ${sku}`,
+          );
 
           // When discount is activated and doesn't apply to all products
           // it should calculate the discount for every product in discount rule
@@ -92,7 +96,9 @@ export class CheckoutService {
             for (const discountRule of promotion.productDiscount) {
               // TODO: move to utility function
               let discountQuantity = discountRule.quantity;
-              console.log(`checkout included ${checkoutItems.length} items`);
+              this.logger.debug(
+                `checkout included ${checkoutItems.length} items`,
+              );
               // Remove from checkout list the items in discount rule
               // They'll be grouped into a single item w/ discount
               while (discountQuantity !== 0) {
@@ -111,7 +117,7 @@ export class CheckoutService {
                 discountQuantity -= 1;
               }
 
-              console.log(
+              this.logger.debug(
                 `checkout now includes ${checkoutItems.length} items`,
               );
 
@@ -125,12 +131,8 @@ export class CheckoutService {
                 discountRule.product.price *
                 (1 - discountRule.discount);
 
-              console.log(
+              this.logger.debug(
                 `added discount product with price ${newProductWithDiscount.price}`,
-              );
-
-              console.log(
-                `original product activation qty ${originalProductActivation[0].quantity}`,
               );
 
               checkoutItems.push(newProductWithDiscount);
