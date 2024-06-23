@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
-import { MockType, repositoryMockFactory } from '../testUtils';
+import { MockType, getProductMock, repositoryMockFactory } from '../testUtils';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('ProductService', () => {
@@ -29,7 +29,7 @@ describe('ProductService', () => {
   });
 
   it('should find a product', async () => {
-    const product = { sku: 'ABC123', name: 'product', price: 10 };
+    const product = getProductMock();
     repositoryMock.findOneBy.mockReturnValue(product);
     expect(await service.findOne(product.sku)).toEqual(product);
     expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sku: product.sku });
