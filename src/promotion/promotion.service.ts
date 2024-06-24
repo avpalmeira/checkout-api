@@ -8,7 +8,6 @@ import { PromotionActivationRule } from './entities/promotion-activation-rule.en
 import { PromotionDiscountRule } from './entities/promotion-discount-rule.entity';
 
 import { instanceToPlain } from 'class-transformer';
-import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class PromotionService {
@@ -105,7 +104,6 @@ export class PromotionService {
     return this.promotionRepository.findOneBy({ id });
   }
 
-  @Transactional()
   async remove(id: number): Promise<void> {
     const promotion = await this.findOne(id);
 

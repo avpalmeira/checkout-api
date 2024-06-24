@@ -1,27 +1,108 @@
-### PRODUCT REQUESTS
+################################# PRODUCT REQUESTS
+
+### Get all products
 GET http://localhost:3000/product
 
-###
+
+### Create product
+### Google Home
+POST http://localhost:3000/product
+Content-Type: application/json
+
+{
+  "name": "Google Home",
+  "sku": "120P90",
+  "price": 50
+}
+
+### Macbook Pro
+POST http://localhost:3000/product
+Content-Type: application/json
+
+{
+  "name": "Macbook Pro",
+  "sku": "43N23P",
+  "price": 5400
+}
+
+### Alexa Speaker
 POST http://localhost:3000/product
 Content-Type: application/json
 
 {
   "name": "Alexa Speaker",
   "sku": "A304SD",
-  "price": 102
+  "price": 109.50
 }
 
-###
+### Raspberry Pi
+POST http://localhost:3000/product
+Content-Type: application/json
+
+{
+  "name": "Raspberry Pi",
+  "sku": "344222",
+  "price": 30
+}
+
+### Get a product by SKU
 GET http://localhost:3000/product/A304SD
 
-###
-DELETE http://localhost:3000/product/ABD878
+### Delete product
+DELETE http://localhost:3000/product/435CDS
 
 
-### PROMOTION REQUESTS
+################################# PROMOTION REQUESTS
+
+### Get all promotions
 GET http://localhost:3000/promotion
 
-###
+### Create a new promotion
+### 1. Buy 3 Google Homes for the price of 2
+POST http://localhost:3000/promotion
+Content-Type: application/json
+
+{
+  "productActivation": [
+    {
+      "quantity": 3,
+      "productSku": "120P90"
+    }
+  ],
+  "productDiscount": [
+    {
+      "quantity": 1,
+      "productSku": "120P90",
+      "discount": 1
+    }
+  ]
+}
+
+### 2. Each sale of a MacBook Pro comes with a free Raspberry Pi
+POST http://localhost:3000/promotion
+Content-Type: application/json
+
+{
+  "productActivation": [
+    {
+      "quantity": 1,
+      "productSku": "43N23P"
+    },
+    {
+      "quantity": 1,
+      "productSku": "344222"
+    }
+  ],
+  "productDiscount": [
+    {
+      "quantity": 1,
+      "productSku": "344222",
+      "discount": 1
+    }
+  ]
+}
+
+### 3. Buying more than 3 Alexa Speakers will have a 10% discount on all Alexa speakers
 POST http://localhost:3000/promotion
 Content-Type: application/json
 
@@ -41,23 +122,47 @@ Content-Type: application/json
   ]
 }
 
-###
+### Get promotion by id
 GET http://localhost:3000/promotion/9
 
-###
-DELETE http://localhost:3000/promotion/8
+### Delete a promotion
+DELETE http://localhost:3000/promotion/10
 
 
-### CHECKOUT REQUESTS
+################################# CHECKOUT REQUESTS
+
+### Calculate total price of items in the checkout
+### Case 1. Buy 3 Google Home, get 1 free
+POST http://localhost:3000/checkout
+Content-Type: application/json
+
+{
+  "products": [
+    "120P90",
+    "120P90",
+    "120P90"
+  ]
+}
+
+### Case 2. Buy a Macbook Pro, get 1 Raspberry Pi free
 POST http://localhost:3000/checkout
 Content-Type: application/json
 
 {
   "products": [
     "344222",
+    "43N23P"
+  ]
+}
+
+### Case 3. Buy at least 3 Alexa Speakers and get 10% discount
+POST http://localhost:3000/checkout
+Content-Type: application/json
+
+{
+  "products": [
     "A304SD",
     "A304SD",
-    "A304SD",
-    "435CDS"
+    "A304SD"
   ]
 }
