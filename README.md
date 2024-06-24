@@ -2,6 +2,8 @@
 
 An API to calculate the total price of products in a checkout list considering current promotions.
 
+### Core features
+
 The system should have the following promotions:
 
 - Buy 3 Google Homes for the price of 2
@@ -33,7 +35,7 @@ Example Scenarios:
 <details>
   <summary>More on REST Client extension</summary>
   
-  ### REST Client extension by Huachao Mao
+### REST Client extension by Huachao Mao
 
 #### What extension?
 
