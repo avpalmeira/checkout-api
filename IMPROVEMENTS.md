@@ -10,6 +10,10 @@
   - Construction of newProductWithDiscount could be moved to utilities function and also discount application code
 - Use Swagger API to better document endpoints and test the API
 
+## Fix bugs
+
+- `getGroupedItemsDiscountSKUs` on [src/utils.ts](https://github.com/avpalmeira/checkout-api/blob/master/src/utils.ts) should have the code to initialize the list of 'special skus' outside the method and only retrieve a single instance of a list so it can be used across different services and classes in the application. Currently the method creates a new list to every method call, making it possible for a new 'grouped item' to use the same sku of a previously inserted 'grouped item'
+
 ## UX improvements
 
 - Filter products and promotions by filter
