@@ -13,6 +13,7 @@
 ## Fix bugs
 
 - `getGroupedItemsDiscountSKUs` on [src/utils.ts](https://github.com/avpalmeira/checkout-api/blob/master/src/utils.ts) should have the code to initialize the list of 'special skus' outside the method and only retrieve a single instance of a list so it can be used across different services and classes in the application. Currently the method creates a new list to every method call, making it possible for a new 'grouped item' to use the same sku of a previously inserted 'grouped item'
+  - [CreateProductDTO](https://github.com/avpalmeira/checkout-api/blob/master/src/product/dto/create-product.dto.ts) would use another method (for example: `getFullListOfSpecialSKUs`) to validate payload for creating new a product
 
 ## UX improvements
 
