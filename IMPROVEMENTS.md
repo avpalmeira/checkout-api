@@ -17,12 +17,12 @@
 
 ## UX improvements
 
-- Filter products and promotions by filter
-- Checkout endpoint returns message with applied discount for each item in the product list
+- Filter products by attributes and promotions by activation and discount information
+- Checkout endpoint returns message with applied discount for each item in the product list and not just the total
 
 ## Error handling and validation
 
-- Treat case where adding a repeated product and promotion
+- Treat case where adding a repeated product name / sku and promotion activation object
 - Creating promotion requires a lot of validation, that validation code should be moved to a utils file (ex: `validation.ts`)
 - Treat case where product is deleted, but there’s still an active promotion for it
 

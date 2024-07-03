@@ -163,6 +163,21 @@ Content-Type: application/json
   "products": [
     "A304SD",
     "A304SD",
+    "A304SD",
     "A304SD"
+  ]
+}
+
+### Case 4. Mixed promotions: Buy a Macbook Pro, 1 Raspberry and 3 G Homes
+POST http://localhost:3000/checkout
+Content-Type: application/json
+
+{
+  "products": [
+    "344222",
+    "43N23P",
+    "120P90",
+    "120P90",
+    "120P90"
   ]
 }
