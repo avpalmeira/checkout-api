@@ -14,15 +14,15 @@ The system should have the following promotions:
 
 Example Scenarios:
 
-- Scanned Items: MacBook Pro, Raspberry Pi B
+- Scanned Items: MacBook Pro ($5,400), Raspberry Pi B ($30)
 
-  Total: $5,399.99
+  Total: $5,400
 
-- Scanned Items: Google Home, Google Home, Google Home
+- Scanned Items: Google Home, Google Home, Google Home ($50)
 
-  Total: $99.98
+  Total: $100
 
-- Scanned Items: Alexa Speaker, Alexa Speaker, Alexa Speaker
+- Scanned Items: Alexa Speaker, Alexa Speaker, Alexa Speaker ($109.50)
 
   Total: $295.65
 
@@ -88,11 +88,11 @@ $ npm run test
 
 ## Thought process
 
-After reading the project description one of the first things I thought was how to handle the business logic of having different types of promotion in the system and also making it extensible
+Deciding on how to handle the business logic for having different types of promotions in the system and also making it extensible to new promotions
 
 ### Promotion structure
 
-So I planned the promotion as having 2 pieces:
+The promotion is divided into 2 pieces:
 
 1. A promotion activation rule which includes the products and how many of them must be included in the checkout so the promotion is active
 2. A promotion discount rule which includes all the products that would be applied the discount in case the promotion is active, how many of them would apply the discount and the discount amount from 0 to 100%
@@ -137,7 +137,7 @@ ProductDiscount: [
 
 ### Calculation
 
-Then I planned how to calculate the price for every product on the checkout list based on saved promotions. This is the logic that I came up with:
+This is the logic for how to calculate the price for every product on the checkout list based on saved promotions:
 
 ```
 > Based on the products’ SKUs as input and promotions saved on the database...
@@ -148,10 +148,6 @@ Then I planned how to calculate the price for every product on the checkout list
     > If no group was found that matches the promotion, check the next promotion
 ```
 
-### Development
-
-Then I started setting up the project using NestJS framework with PostgreSQL as the database inside a Docker container, handling the dependencies, building the resources, entities, migrations, controllers, services, DTOs, validations, module setup, handling errors, logging, manually testing and finally creating automated tests to secure some parts of the services.
-
-Halfway through the project I realized that the API could be simplified and be faster developed by not using NestJS and just using Node with Express as HTTP library. Even though I would never be able to complete everything in 4 hours, as the project didn’t have a limit on the submission date, I decided to take this extra time to refresh and better grasp some concepts that I wasn’t so familiar with or have seen it some long time ago.
+### Improvements
 
 On [this file](./IMPROVEMENTS.md) I’m listing how I would invest further time in making the solution better
